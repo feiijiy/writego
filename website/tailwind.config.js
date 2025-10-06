@@ -75,3 +75,19 @@ module.exports = {
   },
   plugins: [require("@tailwindcss/forms")],
 };
+// we need to use this plugin to be able to symlink plugin docs to "docs" folder
+module.exports = function(context, options) {
+    return {
+      name: "support-symlinks",
+      configureWebpack(config, isServer, utils) {
+        return {
+          resolve: {
+            symlinks: false
+          },
+          devServer: {
+            watchOptions: { followSymlinks: false }
+          }
+        };
+      }
+    };
+  };
