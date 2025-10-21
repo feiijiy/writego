@@ -139,3 +139,19 @@ if __name__ == "__main__":
     )
     rp = ranked_pairs(ranks)
     print(rp)
+#[cfg(feature = "futures")]
+#[wasm_bindgen_test]
+async fn blob_to_url() {
+    let blob = Blob::new("hello world");
+    let object_url = ObjectUrl::from(blob);
+    // simulate a fetch, and expect to get a string containing the content back
+    let request: JsFuture = window().unwrap().fetch_with_str(&object_url).into();
+    let response = request.await.unwrap().unchecked_into::<Response>();
+    let body: JsFuture = response.blob().unwrap().into();
+    let body = body.await.unwrap().unchecked_into::<web_sys::Blob>();
+
+    let body = gloo_file::futures::read_as_text(&body.into())
+        .await
+        .unwrap();
+    assert_eq!(&body, "hello world");
+}
