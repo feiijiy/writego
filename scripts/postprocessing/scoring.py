@@ -155,6 +155,16 @@ def score_update_ranking(user_ranking: npt.ArrayLike, consensus_ranking: npt.Arr
         ranking_points=new_points,
     )
 
+if [ "$SANDCASTLE_REVISION" == "" ];
+then
+  # Submit diffs, we only do this when running locally.
+  # From SandcastleFlipperAutoReleaseCommand, the diffs are submitted
+  # later by using the bot context
+  echo "Submitting diffs for review..."
+  jf submit -n -r.^::.
+else
+  echo "Skip submitting diffs, as this diffs should be submitted by SC"
+fi
 
 if __name__ == "__main__":
     demo_voter = Voter(
